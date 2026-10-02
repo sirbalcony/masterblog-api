@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from flask_swagger_ui import get_swaggerui_blueprint
 
 app = Flask(__name__)
 CORS(app)  # This will enable CORS for all routes
@@ -9,6 +10,21 @@ POSTS = [
     {"id": 2, "title": "Second post", "content": "This is the second post."},
 ]
 
+SWAGGER_URL = "/api/docs"
+API_URL = "/static/masterblog.json"
+
+swagger_ui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        "app_name": "Masterblog API"
+    }
+)
+
+app.register_blueprint(
+    swagger_ui_blueprint,
+    url_prefix=SWAGGER_URL
+)
 
 @app.route('/api/posts', methods=['GET'])
 def get_posts():
