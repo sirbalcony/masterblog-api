@@ -76,6 +76,22 @@ def delete_post(post_id):
         "error": f"Post with id {post_id} not found."
     }), 404
 
+@app.route('/api/posts/search', methods=['GET'])
+def search_posts():
+    title = request.args.get("title")
+    content = request.args.get("content")
+
+    results = []
+
+    for post in POSTS:
+        if title and title.lower() in post["title"].lower():
+            results.append(post)
+
+        elif content and content.lower() in post["content"].lower():
+            results.append(post)
+
+    return jsonify(results), 200
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5002, debug=True)
