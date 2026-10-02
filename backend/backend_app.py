@@ -31,7 +31,7 @@ def add_post():
             "error": "Missing fields: " + ", ".join(missing_fields)
         }), 400
 
-    new_id = max(post["id"] for post in POSTS) + 1
+    new_id = max((post["id"] for post in POSTS), default=0) + 1
 
     new_post = {
         "id": new_id,
@@ -42,6 +42,20 @@ def add_post():
     POSTS.append(new_post)
 
     return jsonify(new_post), 201
+
+@app.route('/api/posts/<int:post_id>', methods=['DELETE'])
+def delete_post(post_id):
+    for post in POSTS:
+        if post["id"] == post_id:
+            POSTS.remove(post)
+
+            return jsonify({
+                "message": f"Post with id {post_id} has been deleted successfully."
+            }), 200
+
+    return jsonify({
+        "error": f"Post with id {post_id} not found."
+    }), 404
 
 
 if __name__ == '__main__':
